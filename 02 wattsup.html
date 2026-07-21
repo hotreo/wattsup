@@ -29,9 +29,10 @@
   <!-- Main Container -->
   <div class="w-full max-w-6xl mx-auto p-4 sm:p-6">
     
-    <header class="text-center mb-6">
-      <h1 data-template-id="game-title" class="canva-text font-display" style="color: rgb(251, 191, 36); font-weight: 900; font-style: normal; font-size: 42px;">⚡ Watt's Up?</h1>
-      <p data-template-id="game-subtitle" class="canva-text mt-1" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 15px;"></p>
+    <!-- Scaled-down header title -->
+    <header class="text-center mb-4">
+      <h1 data-template-id="game-title" class="canva-text font-display text-2xl sm:text-3xl" style="color: rgb(251, 191, 36); font-weight: 900; font-style: normal;">⚡ Watt's Up?</h1>
+      <p data-template-id="game-subtitle" class="canva-text" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 13px;"></p>
     </header>
 
     <!-- Setup Screen -->
@@ -78,23 +79,37 @@
     </div>
 
     <!-- Active Gameplay Layout -->
-    <div id="gameplay-layout" class="hidden">
+    <div id="gameplay-layout" class="hidden flex-col gap-3">
+      
+      <!-- Top Horizontal Progress Bar -->
+      <div id="progress-container" class="flex flex-row items-center justify-between px-4 py-2 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full text-center">
+        <div class="text-xs text-slate-600 font-bold tracking-wide flex-shrink-0" id="progress-text">Round 0/0</div>
+        
+        <div class="flex flex-row items-center justify-center mx-4 flex-1">
+          <div class="w-full h-3.5 bg-slate-100 rounded-full p-[2px] border border-slate-200 relative overflow-hidden">
+            <div id="progress-bar-fill" class="bg-red-500 h-full rounded-full transition-all duration-300 ease-out" style="width: 0%;"></div>
+          </div>
+        </div>
+        
+        <div class="text-xs text-amber-500 font-black tracking-wide flex-shrink-0" id="progress-percent">0%</div>
+      </div>
+
       <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center w-full">
         
-        <!-- Column 1: Persistent Left Scoreboard Panel (Reordered on Mobile) -->
-        <div id="scoreboard" class="order-2 md:order-1 flex flex-col p-5 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full md:w-56 text-left h-auto md:h-[860px]">
+        <!-- Column 1: Persistent Left Scoreboard Panel -->
+        <div id="scoreboard" class="order-2 md:order-1 flex flex-col p-5 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full md:w-56 text-left h-auto md:h-[800px]">
           <h3 data-template-id="scoreboard-title" class="canva-text font-bold mb-3 border-b pb-2 flex items-center gap-1.5 flex-shrink-0" style="color: rgb(180, 83, 9); font-weight: 700; font-style: normal; font-size: 18px;">🏆 Scoreboard</h3>
           <div id="score-list" class="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-1" style="color: rgb(30, 41, 59);"></div>
         </div>
         
         <!-- Column 2: Dynamic Center Frame (Main Game Focus) -->
-        <div class="order-1 md:order-2 flex-1 max-w-2xl w-full h-auto md:h-[860px] flex flex-col">
+        <div class="order-1 md:order-2 flex-1 max-w-2xl w-full h-auto md:h-[800px] flex flex-col">
           
           <!-- Game Screen Card -->
           <div id="game-screen" class="hidden h-full flex flex-col">
             <div data-template-id="game-card" class="canva-card rounded-2xl p-4 sm:p-6 shadow-lg text-center h-full flex flex-col justify-between" style="background: rgb(255, 255, 255);">
               <p id="round-info" class="hidden"></p>
-              <div id="appliance-img-wrap" class="w-full h-48 sm:h-[460px] rounded-xl overflow-hidden mb-3 bg-gray-200 flex-shrink-0">
+              <div id="appliance-img-wrap" class="w-full h-48 sm:h-[420px] rounded-xl overflow-hidden mb-3 bg-gray-200 flex-shrink-0">
                 <img id="appliance-img" class="w-full h-full object-contain" loading="lazy" alt="Appliance image">
               </div>
               <h2 id="appliance-name" class="text-lg sm:text-xl font-bold mb-1 line-clamp-none flex-shrink-0"></h2>
@@ -114,42 +129,40 @@
                 <div id="result-img-wrap" class="w-full h-40 sm:h-56 rounded-xl overflow-hidden mb-3 bg-gray-200 hidden">
                   <img id="result-img" class="w-full h-full object-contain" alt="Appliance image">
                 </div>
+<!-- Dual Wattage Container with Tooltips Shifted Inward to Prevent Boundary Clipping -->
+<div class="flex justify-center items-center gap-6 my-2 pulse-reveal">
+  
+  <!-- Peak Power Column -->
+  <div class="text-center relative">
+    <div class="group inline-flex items-center gap-1 cursor-help relative">
+      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Peak Power</span>
+      <span class="text-amber-500 text-[10px] bg-amber-100 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
+      
+      <!-- Tooltip Popup (Left-Aligned to Stay Within Screen Boundaries) -->
+      <div class="pointer-events-none absolute top-full mt-1.5 left-0 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-30 text-left font-normal leading-tight">
+        Highest power drawn during startup, initial power-on, or maximum settings.
+      </div>
+    </div>
+    <span id="peak-wattage" class="block text-2xl sm:text-3xl font-display font-bold text-amber-600">--W</span>
+  </div>
 
-                <!-- Dual Wattage Container with Interactive Tooltips -->
-                <div class="flex justify-center items-center gap-6 my-2 pulse-reveal">
-                  
-                  <!-- Peak Power Column -->
-                  <div class="text-center relative">
-                    <div class="group inline-flex items-center gap-1 cursor-help">
-                      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Peak Power</span>
-                      <span class="text-amber-500 text-[10px] bg-amber-100 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
-                      
-                      <!-- Tooltip Popup -->
-                      <div class="pointer-events-none absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-20 text-center font-normal leading-tight">
-                        Highest power drawn during startup, initial power-on, or maximum settings.
-                      </div>
-                    </div>
-                    <span id="peak-wattage" class="block text-2xl sm:text-3xl font-display font-bold text-amber-600">--W</span>
-                  </div>
+  <div class="h-8 w-px bg-slate-200"></div>
 
-                  <div class="h-8 w-px bg-slate-200"></div>
+  <!-- Running Power Column -->
+  <div class="text-center relative">
+    <div class="group inline-flex items-center gap-1 cursor-help relative">
+      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Running Power</span>
+      <span class="text-slate-400 text-[10px] bg-slate-200 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
+      
+      <!-- Tooltip Popup (Right-Aligned to Stay Within Screen Boundaries) -->
+      <div class="pointer-events-none absolute top-full mt-1.5 right-0 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-30 text-right font-normal leading-tight">
+        The steady, continuous power draw used to calculate energy consumption and/or battery runtime.
+      </div>
+    </div>
+    <span id="avg-wattage" class="block text-2xl sm:text-3xl font-display font-bold text-slate-800">--W</span>
+  </div>
 
-                  <!-- Running Power Column -->
-                  <div class="text-center relative">
-                    <div class="group inline-flex items-center gap-1 cursor-help">
-                      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Running Power</span>
-                      <span class="text-slate-400 text-[10px] bg-slate-200 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
-                      
-                      <!-- Tooltip Popup -->
-                      <div class="pointer-events-none absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-20 text-center font-normal leading-tight">
-                        The steady, continuous power draw used to calculate energy consumption and/or battery runtime.
-                      </div>
-                    </div>
-                    <span id="avg-wattage" class="block text-2xl sm:text-3xl font-display font-bold text-slate-800">--W</span>
-                  </div>
-
-                </div>
-                
+</div>          
                 <!-- "Did You Know?" Banner Container -->
                 <div id="power-draw-container" class="mb-3 p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-left text-xs text-slate-700 leading-relaxed shadow-sm">
                   <div class="flex items-center gap-1.5 mb-1 text-amber-800 font-bold tracking-wide uppercase text-[11px]">
@@ -178,19 +191,6 @@
             </div>
           </div>
 
-        </div>
-
-        <!-- Column 3: Horizontal Progress Bar on Mobile / Vertical on Desktop -->
-        <div id="progress-container" class="order-3 flex flex-row md:flex-col items-center justify-between p-3 sm:p-4 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full md:w-28 text-center h-auto md:h-[860px]">
-          <div class="text-[11px] text-slate-500 font-bold tracking-wide leading-tight flex-shrink-0 text-left md:text-center" id="progress-text">Round<br>0/0</div>
-          
-          <div class="flex flex-row md:flex-col items-center justify-center mx-3 md:mx-0 my-0 md:my-4 flex-1 w-full">
-            <div class="w-2.5 h-full md:w-7 md:h-full max-h-none md:max-h-[640px] bg-transparent rounded-[6px] p-[2px] border-2 border-amber-500/80 relative flex flex-row md:flex-col justify-start md:justify-end h-4 md:h-full w-full">
-              <div id="progress-bar-fill" class="bg-red-500 h-full md:w-full rounded-[3px] transition-all duration-300 ease-out" style="width: 0%; height: 100%;"></div>
-            </div>
-          </div>
-          
-          <div class="text-sm text-amber-500 font-black tracking-wide flex-shrink-0" id="progress-percent">0%</div>
         </div>
 
       </div>
@@ -563,6 +563,7 @@ const appliances = [
             
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('gameplay-layout').classList.remove('hidden');
+            document.getElementById('gameplay-layout').classList.add('flex');
             
             updateScoreboard();
             nextRound();
@@ -581,19 +582,11 @@ const appliances = [
             roundNum++;
 
             const progressPercent = Math.round(((roundNum - 1) / totalRoundsPool) * 100);
-            document.getElementById('progress-text').innerHTML = `Round<br>${roundNum}/${totalRoundsPool}`;
+            document.getElementById('progress-text').textContent = `Round ${roundNum}/${totalRoundsPool}`;
             document.getElementById('progress-percent').textContent = `${progressPercent}%`;
 
             const fillBar = document.getElementById('progress-bar-fill');
-            
-            // Responsive direction updates: horizontal fill on mobile, vertical fill on desktop
-            if (window.innerWidth < 768) {
-                fillBar.style.width = `${progressPercent}%`;
-                fillBar.style.height = `100%`;
-            } else {
-                fillBar.style.height = `${progressPercent}%`;
-                fillBar.style.width = `100%`;
-            }
+            fillBar.style.width = `${progressPercent}%`;
 
             fillBar.classList.remove('bg-red-500', 'bg-yellow-400', 'bg-green-500');
             if (progressPercent < 33) {
@@ -613,6 +606,9 @@ const appliances = [
             guessDiv.innerHTML = players.map((p, i) => `<div class="flex items-center gap-2"><span class="w-24 text-sm font-medium truncate">${p}</span><input type="number" id="guess-${i}" placeholder="Watts?" class="flex-1 border-2 rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none"></div>`).join('');
 
             document.getElementById('game-screen').classList.remove('hidden');
+
+            // Scroll smoothly back to top when switching rounds
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function revealAnswer() {
@@ -697,6 +693,9 @@ const appliances = [
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             updateScoreboard();
+
+            // Scroll smoothly back to top when revealing answers
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function updateScoreboard() {
@@ -711,6 +710,7 @@ const appliances = [
 
         function endGame() {
             document.getElementById('gameplay-layout').classList.add('hidden');
+            document.getElementById('gameplay-layout').classList.remove('flex');
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.add('hidden');
 
@@ -727,11 +727,15 @@ const appliances = [
             }).join('');
 
             document.getElementById('end-screen').classList.remove('hidden');
+
+            // Scroll smoothly back to top when showing final standings
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function restartGame() {
             document.getElementById('end-screen').classList.add('hidden');
             document.getElementById('setup-screen').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function openManager() {
