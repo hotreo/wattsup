@@ -13,11 +13,11 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            height: 100dvh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
 
-        /* Standardized container matching 16:9 image proportions */
         .game-container {
             position: relative;
             width: 100%;
@@ -26,7 +26,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             border-radius: 12px;
             overflow: hidden;
-            container-type: inline-size; /* Enables container query units for fluid scaling */
+            container-type: inline-size;
+            background-color: #ffffff;
         }
 
         .screen {
@@ -42,25 +43,32 @@
             object-fit: cover;
         }
 
-        /* Utility class to handle screen transitions */
         .hidden {
             display: none !important;
         }
 
-        /* Responsive vertical flex container for title screen buttons */
         .button-group {
             position: absolute;
-            top: 43%;
+            top: 25%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.8cqw; /* Gap scales dynamically with container width to eliminate collision */
+            gap: 1.8cqw;
             z-index: 5;
+            width: 80%;
         }
 
-        /* Coded UI Buttons overlaid on the background */
+        .header-logo {
+            width: auto;
+            max-width: 60cqw;
+            max-height: 20cqw;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 0.5cqw;
+        }
+
         .btn-how-to {
             background-color: #fdf5d6;
             color: #1d5582;
@@ -112,32 +120,145 @@
             transform: scale(0.97);
         }
 
-        /* Styled "Back" Button on How To Play Screen */
+        /* Rules Text Card Container */
+        .rules-card {
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 580px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid #20867b;
+            border-radius: 16px;
+            padding: 2.5cqw 3cqw 4cqw 3cqw; /* Added extra bottom padding to create clearance for the button */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rules-title {
+            margin: 0 0 1.2cqw 0;
+            color: #1d5582;
+            font-size: clamp(1rem, 3.5cqw, 1.8rem);
+            font-weight: 700;
+        }
+
+        .rules-text {
+            color: #333333;
+            font-size: clamp(0.7rem, 2cqw, 1.05rem);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .rules-formula {
+            margin: 1.2cqw 0;
+            font-weight: 700;
+            color: #1d5582;
+            font-size: clamp(0.75rem, 2.2cqw, 1.15rem);
+        }
+
+        .rules-footnote {
+            margin-top: 0.8cqw;
+            font-style: italic;
+            color: #555555;
+            font-size: clamp(0.65rem, 1.8cqw, 0.95rem);
+        }
+
+        /* "Back" Button anchored directly straddling the bottom border line */
         .btn-back {
             position: absolute;
-            bottom: 5%;
+            bottom: 0;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, 50%); /* Centers the button right on the bottom border line */
             background-color: #fdf5d6;
             color: #1d5582;
-            border: 1.5px solid rgba(29, 85, 130, 0.3);
+            border: 1.5px solid rgba(29, 85, 130, 0.4);
             border-radius: 12px;
-            padding: 1cqw 3cqw;
+            padding: 0.8cqw 3cqw;
             font-size: clamp(0.75rem, 2cqw, 1rem);
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
             transition: transform 0.1s ease, filter 0.1s ease;
+            white-space: nowrap;
             z-index: 10;
         }
 
         .btn-back:hover {
             filter: brightness(0.95);
-            transform: translateX(-50%) scale(1.05);
+            transform: translate(-50%, 50%) scale(1.05);
         }
 
         .btn-back:active {
-            transform: translateX(-50%) scale(0.98);
+            transform: translate(-50%, 50%) scale(0.98);
+        }
+
+        /* ==========================================
+           MOBILE OPTIMIZATIONS
+           ========================================== */
+        @media (max-width: 768px) {
+            .game-container {
+                width: 100vw;
+                height: 100dvh;
+                max-width: none;
+                aspect-ratio: auto;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .button-group {
+                top: 20%;
+                gap: 16px;
+                width: 90%;
+            }
+
+            .header-logo {
+                max-width: 80%;
+                max-height: 180px;
+            }
+
+            .rules-card {
+                width: 88%;
+                padding: 20px 16px 36px 16px;
+            }
+
+            .rules-title {
+                font-size: 1.3rem;
+                margin-bottom: 10px;
+            }
+
+            .rules-text {
+                font-size: 0.95rem;
+            }
+
+            .rules-formula {
+                font-size: 1rem;
+                margin: 12px 0;
+            }
+
+            .rules-footnote {
+                font-size: 0.85rem;
+            }
+
+            .btn-how-to {
+                padding: 10px 24px;
+                font-size: 1rem;
+            }
+
+            .btn-enter {
+                padding: 14px 42px;
+                font-size: 1.35rem;
+            }
+
+            .btn-back {
+                padding: 10px 28px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -147,11 +268,10 @@
         
         <!-- SCREEN 1: TITLE SCREEN -->
         <div id="title-screen" class="screen">
-            <!-- Title graphic background without embedded button art -->
-            <img src="Title.png" alt="Watt's Up Title Graphic">
+            <img src="Background.png" alt="Watt's Up Title Graphic">
             
-            <!-- Coded interactive UI elements wrapped in dynamic flex box -->
             <div class="button-group">
+                <img src="logo.png" alt="Logo" class="header-logo">
                 <button id="btn-how-to" class="btn-how-to">How to Play</button>
                 <button id="btn-enter" class="btn-enter">ENTER</button>
             </div>
@@ -159,8 +279,23 @@
 
         <!-- SCREEN 2: HOW TO PLAY SCREEN -->
         <div id="rules-screen" class="screen hidden">
-            <img src="How To Play.png" alt="How To Play Instructions">
-            <button id="btn-back" class="btn-back">Back</button>
+            <img src="Background.png" alt="Background Graphic">
+            
+            <div class="rules-card">
+                <h2 class="rules-title">How to Play</h2>
+                <p class="rules-text">Guess the wattage of the item shown on screen.</p>
+                <p class="rules-text">Each player gets points based on how close their guess is to the actual wattage. The formula is:</p>
+                
+                <div class="rules-formula">
+                    10 × (1 − your error ÷ actual wattage)
+                </div>
+                
+                <p class="rules-footnote">Minimum 1 point.</p>
+                <p class="rules-text" style="margin-top: 8px; font-weight: 600;">The closest guesser gets +2 bonus points on top.</p>
+                
+                <!-- Anchored along the bottom border line -->
+                <button id="btn-back" class="btn-back">Back</button>
+            </div>
         </div>
 
     </div>
@@ -174,19 +309,16 @@
             const btnEnter = document.getElementById('btn-enter');
             const btnBack = document.getElementById('btn-back');
 
-            // Navigate to How To Play rules
             btnHowTo.addEventListener('click', () => {
                 titleScreen.classList.add('hidden');
                 rulesScreen.classList.remove('hidden');
             });
 
-            // Return to Title Screen
             btnBack.addEventListener('click', () => {
                 rulesScreen.classList.add('hidden');
                 titleScreen.classList.remove('hidden');
             });
 
-            // Transition to Next Game Module
             btnEnter.addEventListener('click', () => {
                 window.location.href = "02 wattsup.html";
             });
