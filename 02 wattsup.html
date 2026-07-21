@@ -656,7 +656,7 @@ const appliances = [
             else { img.parentElement.classList.add('hidden'); }
 
             const guessDiv = document.getElementById('guess-inputs');
-            guessDiv.innerHTML = players.map((p, i) => `<div class="flex items-center gap-2"><span class="w-24 text-sm font-medium truncate">${p}</span><input type="number" id="guess-${i}" placeholder="Watts?" class="flex-1 border-2 rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none"></div>`).join('');
+            guessDiv.innerHTML = players.map((p, i) => `<div class="flex items-center justify-between gap-2"><span class="text-sm font-medium break-words flex-1 min-w-0 pr-2">${p}</span><input type="number" id="guess-${i}" placeholder="Watts?" class="w-28 sm:w-36 flex-shrink-0 border-2 rounded-lg px-3 py-2 text-center focus:border-amber-500 focus:outline-none"></div>`).join('');
 
             document.getElementById('game-screen').classList.remove('hidden');
 
