@@ -43,7 +43,7 @@
     /* Desktop Viewport Specifics */
     @media (min-width: 769px) {
       .global-background {
-        object-fit: none; /* Keeps 1:1 pixel scale, anchored to bottom, cut off at top */
+        object-fit: none;
       }
     }
   </style>
@@ -56,16 +56,16 @@
   <img src="Background.png" alt="Background Graphic" class="global-background">
 
   <!-- Main Container -->
-  <div class="relative z-10 w-full max-w-6xl mx-auto p-4 sm:p-6">
+  <div class="relative z-10 w-full max-w-6xl mx-auto p-4 sm:p-6 min-h-screen flex flex-col justify-between">
     
     <!-- Scaled-down header title -->
-    <header class="text-center mb-4">
+    <header class="text-center mb-3 flex-shrink-0">
       <h1 data-template-id="game-title" class="canva-text font-display text-2xl sm:text-3xl" style="color: rgb(251, 191, 36); font-weight: 900; font-style: normal;">⚡ Watt's Up?</h1>
       <p data-template-id="game-subtitle" class="canva-text" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 13px;"></p>
     </header>
 
     <!-- Setup Screen -->
-    <div id="setup-screen">
+    <div id="setup-screen" class="my-auto">
       <div data-template-id="setup-card" class="canva-card rounded-2xl p-6 shadow-lg max-w-3xl mx-auto" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);">
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -108,7 +108,7 @@
     </div>
 
     <!-- Active Gameplay Layout -->
-    <div id="gameplay-layout" class="hidden flex-col gap-3">
+    <div id="gameplay-layout" class="hidden flex-col flex-1 gap-3">
       
       <!-- Horizontal Progress Bar (Mobile Only) -->
       <div id="progress-container" class="flex md:hidden flex-row items-center justify-between px-4 py-2 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full text-center">
@@ -123,22 +123,22 @@
         <div class="text-xs text-amber-500 font-black tracking-wide flex-shrink-0 progress-percent">0%</div>
       </div>
 
-      <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center w-full">
+      <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center w-full flex-1">
         
         <!-- Column 1: Persistent Left Scoreboard Panel -->
-        <div id="scoreboard" class="order-2 md:order-1 flex flex-col p-5 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full md:w-56 text-left h-auto md:h-[800px]">
+        <div id="scoreboard" class="order-2 md:order-1 flex flex-col p-5 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 w-full md:w-56 text-left h-auto md:h-[calc(100vh-120px)] md:min-h-[600px]">
           <h3 data-template-id="scoreboard-title" class="canva-text font-bold mb-3 border-b pb-2 flex items-center gap-1.5 flex-shrink-0" style="color: rgb(180, 83, 9); font-weight: 700; font-style: normal; font-size: 18px;">🏆 Scoreboard</h3>
           <div id="score-list" class="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-1" style="color: rgb(30, 41, 59);"></div>
         </div>
         
         <!-- Column 2: Dynamic Center Frame (Main Game Focus) -->
-        <div class="order-1 md:order-2 flex-1 max-w-2xl w-full h-auto md:h-[800px] flex flex-col">
+        <div class="order-1 md:order-2 flex-1 max-w-2xl w-full h-auto md:h-[calc(100vh-120px)] md:min-h-[600px] flex flex-col">
           
           <!-- Game Screen Card -->
           <div id="game-screen" class="hidden h-full flex flex-col">
             <div data-template-id="game-card" class="canva-card rounded-2xl p-4 sm:p-6 shadow-lg text-center h-full flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);">
               <p id="round-info" class="hidden"></p>
-              <div id="appliance-img-wrap" class="w-full h-48 sm:h-[420px] rounded-xl overflow-hidden mb-3 bg-gray-200 flex-shrink-0">
+              <div id="appliance-img-wrap" class="w-full h-48 sm:h-auto sm:flex-1 rounded-xl overflow-hidden mb-3 bg-gray-200 min-h-[220px]">
                 <img id="appliance-img" class="w-full h-full object-contain" loading="lazy" alt="Appliance image">
               </div>
               <h2 id="appliance-name" class="text-lg sm:text-xl font-bold mb-1 line-clamp-none flex-shrink-0"></h2>
@@ -155,7 +155,7 @@
             <div data-template-id="result-card" class="canva-card rounded-2xl p-4 sm:p-6 shadow-lg text-center h-full flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);">
               
               <div class="flex-1 overflow-y-auto custom-scrollbar pr-1 mb-3">
-                <div id="result-img-wrap" class="w-full h-40 sm:h-56 rounded-xl overflow-hidden mb-3 bg-gray-200 hidden">
+                <div id="result-img-wrap" class="w-full h-40 sm:h-64 rounded-xl overflow-hidden mb-3 bg-gray-200 hidden">
                   <img id="result-img" class="w-full h-full object-contain" alt="Appliance image">
                 </div>
 
@@ -223,7 +223,7 @@
         </div>
 
         <!-- Column 3: Vertical Progress Bar Panel (Desktop Only) -->
-        <div id="desktop-progress-container" class="order-3 hidden md:flex md:flex-col items-center justify-between p-3 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 h-[800px] w-14 flex-shrink-0 text-center">
+        <div id="desktop-progress-container" class="order-3 hidden md:flex md:flex-col items-center justify-between p-3 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 h-auto md:h-[calc(100vh-120px)] md:min-h-[600px] w-14 flex-shrink-0 text-center">
           <div class="text-xs text-amber-500 font-black tracking-wide progress-percent">0%</div>
           
           <div class="flex-1 my-3 w-4 bg-slate-100 rounded-full p-[2px] border border-slate-200 flex flex-col justify-end overflow-hidden">
@@ -237,7 +237,7 @@
     </div>
 
     <!-- End Screen -->
-    <div id="end-screen" class="hidden">
+    <div id="end-screen" class="hidden my-auto">
       <div data-template-id="end-card" class="canva-card rounded-2xl p-6 shadow-lg text-center max-w-3xl mx-auto" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(4px);">
         <h2 class="text-3xl font-display font-bold mb-2" style="color: rgb(245, 158, 11);">🏆 Final Standings</h2>
         <p class="text-sm opacity-70 mb-6">All available appliances have been guessed! Thanks for playing!</p>
@@ -266,7 +266,7 @@
     </div>
 
     <!-- Persistent Global Footer Disclaimer -->
-    <footer class="mt-8 text-center text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
+    <footer class="mt-4 text-center text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed flex-shrink-0">
       <p>
         ⚡ <strong>Watt's Up?</strong> is for educational and entertainment purposes only. 
       </p>
@@ -622,7 +622,6 @@ const appliances = [
 
             const progressPercent = Math.round(((roundNum - 1) / totalRoundsPool) * 100);
             
-            // Sync text elements for both mobile and desktop views
             document.querySelectorAll('.progress-text').forEach(el => {
                 el.innerHTML = el.tagName === 'DIV' && el.innerHTML.includes('<br>') 
                     ? `Round<br>${roundNum}/${totalRoundsPool}` 
@@ -632,12 +631,10 @@ const appliances = [
                 el.textContent = `${progressPercent}%`;
             });
 
-            // Update mobile horizontal bar
             const fillBarMobile = document.getElementById('progress-bar-fill');
             fillBarMobile.style.width = `${progressPercent}%`;
             fillBarMobile.classList.remove('bg-red-500', 'bg-yellow-400', 'bg-green-500');
 
-            // Update desktop vertical bar
             const fillBarDesktop = document.getElementById('desktop-progress-bar-fill');
             fillBarDesktop.style.height = `${progressPercent}%`;
             fillBarDesktop.classList.remove('bg-red-500', 'bg-yellow-400', 'bg-green-500');
