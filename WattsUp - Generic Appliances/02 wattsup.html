@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260716-03-b2f2a3d"}');</script>
+  <script src="/_sdk/f432b76fb310b513.telemetry_sdk.js" integrity="sha512-9FJQ55EKmmqhyyik8BhrMVfm0+iYYfb8uOlRsjtkxJMEI97qOVEI4PnHohDjQAtvAep0IOEpdQ64eki0sz62ug=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watt's Up?</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=Fraunces:wght@700;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    .font-display { font-family: 'Fraunces', serif; }
+    .modal-overlay { background: rgba(0,0,0,0.6); }
+    .pulse-reveal { animation: pulseIn 0.5s ease-out; }
+    @keyframes pulseIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+  <script src="/_sdk/e3937a0574eb2d69.data_sdk.js" type="text/javascript" integrity="sha512-xbp/ACqEQy1aDxYMtXTrR3y5MUbzxuggRR/9sD48Gl4VhLMMCiAHsxMaFV6DTdeBpR6ymF+t2zhPKYkWM3+Jfw=="></script>
+  <script src="/_sdk/9432170dbd2ae0df.resizing_sdk.js" type="text/javascript" integrity="sha512-FeT+58sb1f9ejWPWFjCbJvTT+SDwGV+ngrHUnlO7TWEOoqwOLj6p256kO3vOL7DIWl1cIgrobiof8v2bOigwPg=="></script>
+</head>
+<body data-template-id="__page-root" class="min-h-screen w-full bg-cover bg-center bg-no-repeat bg-fixed" style="background-image: url('Background.PNG');">
+  
+  <!-- Main Container -->
+  <div class="w-full max-w-6xl mx-auto p-4 sm:p-6">
+    
+    <header class="text-center mb-6">
+      <h1 data-template-id="game-title" class="canva-text font-display" style="color: rgb(251, 191, 36); font-weight: 900; font-style: normal; font-size: 42px;">⚡ Watt's Up?</h1>
+      <p data-template-id="game-subtitle" class="canva-text mt-1" style="color: rgb(148, 163, 184); font-weight: 400; font-style: normal; font-size: 15px;"></p>
+    </header>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen">
+      <div data-template-id="setup-card" class="canva-card rounded-2xl p-6 shadow-lg max-w-3xl mx-auto" style="background: rgb(255, 255, 255);">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label data-template-id="player-count-label" class="canva-text block mb-1 font-medium" for="player-count" style="color: rgb(30, 41, 59); font-weight: 500; font-size: 15px;">Number of Players</label>
+            <input id="player-count" type="number" min="1" max="8" value="2" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-center text-lg focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="canva-text block mb-1 font-medium" for="electricity-rate" style="color: rgb(30, 41, 59); font-weight: 500; font-size: 15px;">Electricity Rate (/kWh)</label>
+            <div class="flex gap-2">
+              <select id="currency-symbol" class="border-2 border-gray-300 rounded-lg px-2 py-2 text-lg focus:outline-none focus:border-amber-500 bg-white">
+                <option value="₱">₱ (PHP)</option>
+                <option value="$">$ (USD)</option>
+                <option value="€">€ (EUR)</option>
+                <option value="£">£ (GBP)</option>
+                <option value="¥">¥ (JPY/CNY)</option>
+                <option value="₹">₹ (INR)</option>
+              </select>
+              <input id="electricity-rate" type="number" step="0.01" value="15.00" min="0" class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-center text-lg focus:outline-none focus:border-amber-500">
+            </div>
+          </div>
+        </div>
+
+        <div id="player-names" class="mt-4 space-y-2"></div>
+        
+        <!-- Subtle Disclaimer Banner -->
+        <div class="mt-5 p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-500 leading-normal text-left">
+          <p class="font-medium text-slate-600 mb-0.5 flex items-center gap-1"><span>ℹ️</span> <span>Disclaimer</span></p>
+          <p>
+            This game is designed for educational and entertainment purposes only. 
+            Appliance power draw figures and consumption estimates are based on popular appliances in the Philippines as of 2026. 
+            Actual usage may vary depending on device model, age, and operating conditions.
+          </p>
+        </div>
+
+        <div class="flex gap-3 mt-5">
+          <button data-template-id="start-button" class="canva-button px-6 py-3 rounded-xl font-bold text-lg transition hover:scale-105 w-full sm:w-auto" onclick="startGame()" style="background: rgb(245, 158, 11); color: rgb(26, 26, 46); font-weight: 700; font-style: normal; font-size: 16px;">Start Game</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Gameplay Layout -->
+    <div id="gameplay-layout" class="hidden">
+      <div class="flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center w-full">
+        
+        <!-- Column 1: Persistent Left Scoreboard Panel -->
+        <div id="scoreboard" class="flex flex-col p-5 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 min-w-[200px] md:w-56 text-left h-[860px]">
+          <h3 data-template-id="scoreboard-title" class="canva-text font-bold mb-3 border-b pb-2 flex items-center gap-1.5 flex-shrink-0" style="color: rgb(180, 83, 9); font-weight: 700; font-style: normal; font-size: 18px;">🏆 Scoreboard</h3>
+          <div id="score-list" class="space-y-2 flex-1 overflow-y-auto custom-scrollbar pr-1" style="color: rgb(30, 41, 59);"></div>
+        </div>
+        
+        <!-- Column 2: Dynamic Center Frame -->
+        <div class="flex-1 max-w-2xl w-full h-[860px] flex flex-col">
+          
+          <!-- Game Screen Card -->
+          <div id="game-screen" class="hidden h-full flex flex-col">
+            <div data-template-id="game-card" class="canva-card rounded-2xl p-6 shadow-lg text-center h-full flex flex-col justify-between" style="background: rgb(255, 255, 255);">
+              <p id="round-info" class="hidden"></p>
+              <div id="appliance-img-wrap" class="w-full h-[460px] rounded-xl overflow-hidden mb-3 bg-gray-200 flex-shrink-0">
+                <img id="appliance-img" class="w-full h-full object-contain" loading="lazy" alt="Appliance image">
+              </div>
+              <h2 id="appliance-name" class="text-xl font-bold mb-1 line-clamp-none flex-shrink-0"></h2>
+              <p data-template-id="guess-prompt" class="canva-text mb-3 flex-shrink-0" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 15px;">How much power does this device require?</p>
+              
+              <div id="guess-inputs" class="space-y-2 text-left flex-1 overflow-y-auto custom-scrollbar my-2 pr-1 max-h-[200px]"></div>
+              
+              <button data-template-id="reveal-button" class="canva-button mt-2 px-6 py-3 rounded-xl font-bold text-lg transition hover:scale-105 w-full flex-shrink-0" onclick="revealAnswer()" style="background: rgb(245, 158, 11); color: rgb(26, 26, 46); font-weight: 700; font-style: normal; font-size: 16px;">Reveal Answer!</button>
+            </div>
+          </div>
+
+          <!-- Result Screen Card -->
+          <div id="result-screen" class="hidden h-full flex flex-col">
+            <div data-template-id="result-card" class="canva-card rounded-2xl p-6 shadow-lg text-center h-full flex flex-col justify-between" style="background: rgb(255, 255, 255);">
+              
+              <div class="flex-1 overflow-y-auto custom-scrollbar pr-1 mb-3">
+                <div id="result-img-wrap" class="w-full h-56 rounded-xl overflow-hidden mb-3 bg-gray-200 hidden">
+                  <img id="result-img" class="w-full h-full object-contain" alt="Appliance image">
+                </div>
+
+                <!-- Dual Wattage Container with Interactive Tooltips -->
+                <div class="flex justify-center items-center gap-6 my-2 pulse-reveal">
+                  
+                  <!-- Peak Power Column -->
+                  <div class="text-center relative">
+                    <div class="group inline-flex items-center gap-1 cursor-help">
+                      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Peak Power</span>
+                      <span class="text-amber-500 text-[10px] bg-amber-100 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
+                      
+                      <!-- Tooltip Popup -->
+                      <div class="pointer-events-none absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-20 text-center font-normal leading-tight">
+                        Highest power drawn during startup, initial power-on, or maximum settings.
+                      </div>
+                    </div>
+                    <span id="peak-wattage" class="block text-3xl font-display font-bold text-amber-600">--W</span>
+                  </div>
+
+                  <div class="h-8 w-px bg-slate-200"></div>
+
+                  <!-- Running Power Column -->
+                  <div class="text-center relative">
+                    <div class="group inline-flex items-center gap-1 cursor-help">
+                      <span class="block text-xs uppercase tracking-wider text-slate-500 font-semibold">Running Power</span>
+                      <span class="text-slate-400 text-[10px] bg-slate-200 rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold">?</span>
+                      
+                      <!-- Tooltip Popup -->
+                      <div class="pointer-events-none absolute bottom-full mb-1.5 left-1/2 -translate-x-1/2 w-48 p-2 bg-slate-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-20 text-center font-normal leading-tight">
+                        The steady, continuous power draw used to calculate energy consumption and/or battery runtime.
+                      </div>
+                    </div>
+                    <span id="avg-wattage" class="block text-3xl font-display font-bold text-slate-800">--W</span>
+                  </div>
+
+                </div>
+                
+                <!-- "Did You Know?" Banner Container -->
+                <div id="power-draw-container" class="mb-3 p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-left text-xs text-slate-700 leading-relaxed shadow-sm">
+                  <div class="flex items-center gap-1.5 mb-1 text-amber-800 font-bold tracking-wide uppercase text-[11px]">
+                    <span>💡</span>
+                    <span>Energy Insight</span>
+                  </div>
+                  <div id="power-draw-description" class="italic text-slate-600"></div>
+                </div>
+
+                <div id="appliance-metrics-breakdown" class="grid grid-cols-2 gap-3 mb-4 p-3 bg-slate-50 rounded-xl text-left text-xs text-slate-600 border border-slate-100">
+                  <div class="space-y-1.5 border-r border-slate-200 pr-2">
+                    <div>⏳ <span class="font-medium text-slate-800">Avg Duration:</span> <span id="metric-duration"></span></div>
+                    <div>🔋 <span class="font-medium text-slate-800">Energy/Use:</span> <span id="metric-energy"></span></div>
+                    <div>🔄 <span class="font-medium text-slate-800">Frequency:</span> <span id="metric-frequency"></span> days/mo</div>
+                  </div>
+                  <div class="space-y-1.5 pl-2">
+                    <div>🪙 <span class="font-medium text-slate-800">Cost per Use:</span> <span id="metric-cost"></span></div>
+                    <div>📅 <span class="font-medium text-slate-800">Est. Monthly Cost:</span> <span id="metric-monthly"></span></div>
+                    <div class="text-[10px] text-slate-400 pt-1 border-t border-dashed border-slate-200" id="metric-rate-display">⚡ Rate: 15.00/kWh</div>
+                  </div>
+                </div>
+                <div id="result-list" class="space-y-1.5 text-left"></div>
+              </div>
+              
+              <button data-template-id="next-button" class="canva-button px-6 py-3 rounded-xl font-bold transition hover:scale-105 w-full flex-shrink-0" onclick="nextRound()" style="background: rgb(245, 158, 11); color: rgb(26, 26, 46); font-weight: 700; font-style: normal; font-size: 16px;">Next Round →</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Column 3: Persistent Right Vertical Battery Progress Bar -->
+        <div id="progress-container" class="flex flex-col items-center justify-between p-4 bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-slate-100 min-w-[90px] md:w-28 text-center h-[860px]">
+          <div class="text-[11px] text-slate-500 font-bold tracking-wide leading-tight flex-shrink-0" id="progress-text">Round<br>0/0</div>
+          <div class="flex flex-col items-center justify-center my-4 flex-1 w-full">
+            <div class="w-2.5 h-1 bg-amber-500/80 rounded-t-[2px] -mb-[2px] flex-shrink-0"></div>
+            <div class="w-7 h-full max-h-[640px] bg-transparent rounded-[6px] p-[2px] border-2 border-amber-500/80 relative flex flex-col justify-end">
+              <div id="progress-bar-fill" class="bg-red-500 w-full rounded-[3px] transition-all duration-300 ease-out" style="height: 0%;"></div>
+            </div>
+          </div>
+          <div class="text-sm text-amber-500 font-black tracking-wide flex-shrink-0" id="progress-percent">0%</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- End Screen -->
+    <div id="end-screen" class="hidden">
+      <div data-template-id="end-card" class="canva-card rounded-2xl p-6 shadow-lg text-center max-w-3xl mx-auto" style="background: rgb(255, 255, 255);">
+        <h2 class="text-3xl font-display font-bold mb-2" style="color: rgb(245, 158, 11);">🏆 Final Standings</h2>
+        <p class="text-sm opacity-70 mb-6">All available appliances have been guessed! Thanks for playing!</p>
+        <div id="final-standing-list" class="space-y-2 text-left mb-6"></div>
+        <button class="canva-button px-6 py-3 rounded-xl font-bold transition hover:scale-105" onclick="restartGame()" style="background: rgb(245, 158, 11); color: rgb(26, 26, 46); font-weight: 700; font-style: normal; font-size: 16px;">Play Again ↺</button>
+      </div>
+    </div>
+
+    <!-- Appliance Manager Modal -->
+    <div id="manager-modal" class="hidden fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4">
+      <div data-template-id="manager-panel" class="canva-panel bg-white rounded-2xl w-full max-w-lg max-h-[80vh] overflow-hidden flex flex-col shadow-2xl" style="background: rgb(255, 255, 255);">
+        <div class="flex items-center justify-between p-4 border-b">
+          <h3 data-template-id="manager-title" class="canva-text font-bold text-lg" style="color: rgb(30, 41, 59); font-weight: 700; font-style: normal; font-size: 19px;">Manage Appliances</h3>
+          <button onclick="closeManager()" class="p-1 hover:bg-gray-100 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div id="appliance-list" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+        <div class="p-4 border-t">
+          <div class="flex gap-2">
+            <input id="new-name" type="text" placeholder="Appliance name" class="flex-1 border rounded-lg px-3 py-2 text-sm">
+            <input id="new-watts" type="number" placeholder="Watts" class="w-20 border rounded-lg px-3 py-2 text-sm">
+            <input id="new-frequency" type="number" placeholder="Freq" class="w-16 border rounded-lg px-3 py-2 text-sm">
+            <button onclick="addAppliance()" class="bg-amber-50 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-600"><i data-lucide="plus" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Persistent Global Footer Disclaimer -->
+    <footer class="mt-8 text-center text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
+      <p>
+        ⚡ <strong>Watt's Up?</strong> is for educational and entertainment purposes only. 
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="/_sdk/b19ec5e9a6bcccbf.editing_sdk.js" integrity="sha512-zBJgQuXCQdyGFqXgZwfp8p9NowwbyuWhOK/NGHf9nps+IMSAyeeSyv3qhtfcnKWA9sWownxUevRqEhsjnjL55w=="></script>
+  <script>
+const appliances = [
+    {
+        name: "Peak Power needed to run a modern 7.9 cu. ft. 2-Door No-Frost Refrigerator",
+        watts: 70,
+        peakWatts: 70,
+        averageWatts: 35,
+        duration: "24.00 hrs",
+        frequency: 30,
+        img: "2Door Refrigerator.jpg",
+        powerDraw: "A fridge runs continuously, but the compressor cycles on and off to maintain a steady temperature. It draws extra power during the initial cooling phase."
+    },
+    {
+        name: "Peak Power to run a Single Induction Cooker",
+        watts: 2000,
+        peakWatts: 2000,
+        averageWatts: 1200,
+        duration: "1.00 hrs",
+        frequency: 30,
+        img: "Single Burner Induction Cooker.jpg",
+        powerDraw: "An induction cooker uses electromagnetic fields to heat the pan directly. While it draws high power to reach cooking temperatures rapidly, it allows for precise control; once at the desired heat, you can significantly lower the wattage to maintain a steady simmer, making it highly energy-efficient for sustained cooking."
+    },
+    {
+        name: "Peak Power to run a Twin Induction Cooker",
+        watts: 2800,
+        peakWatts: 2800,
+        averageWatts: 1680,
+        duration: "1.00 hrs",
+        frequency: 30,
+        img: "Twin Burner Induction Cooker.jpg",
+        powerDraw: "An induction cooker uses electromagnetic fields to heat the pan directly. While it draws high power to reach cooking temperatures rapidly, it allows for precise control; once at the desired heat, you can significantly lower the wattage to maintain a steady simmer, making it highly energy-efficient for sustained cooking."
+    },
+    {
+        name: "Peak Power to run a 23L Microwave Oven to make popcorn",
+        watts: 1200,
+        peakWatts: 1200,
+        averageWatts: 1200,
+        duration: "0.08 hrs",
+        frequency: 10,
+        img: "Microwave.jpg",
+        powerDraw: "A microwave uses a magnetron to generate energy waves. It draws a heavy, consistent load of power only while the appliance is actively heating food."
+    },
+    {
+        name: "Peak power needed to run a 5L Air Fryer",
+        watts: 1500,
+        peakWatts: 1500,
+        averageWatts: 1125,
+        duration: "0.50 hrs",
+        frequency: 30,
+        img: "Air Fryer.jpg",
+        powerDraw: "An air fryer uses a heating element and a fan to circulate hot air. It requires high power to maintain the steady heat needed for crispy cooking."
+    },
+    {
+        name: "Peak Power needed to run a 1.8L Electric Kettle",
+        watts: 1500,
+        peakWatts: 1500,
+        averageWatts: 1500,
+        duration: "0.07 hrs",
+        frequency: 60,
+        img: "Electric Kettle.jpg",
+        powerDraw: "A kettle draws high power for a short period to boil water rapidly, then shuts off automatically once the target temperature is reached."
+    },
+    {
+        name: "Running Power of a Free Standing Bottom Load Water Dispenser",
+        watts: 250,
+        peakWatts: 565,
+        averageWatts: 250,
+        duration: "2.50 hrs",
+        frequency: 30,
+        img: "Water Dispenser.jpg",
+        powerDraw: "A water dispenser uses automated heating and cooling modules that cycle on and off to keep your water supply at the desired temperature."
+    },
+    {
+        name: "Peak power needed to run a blender",
+        watts: 500,
+        peakWatts: 500,
+        averageWatts: 500,
+        duration: "0.03 hrs",
+        frequency: 30,
+        img: "Blender.jpg",
+        powerDraw: "A blender draws power to spin its blades. The motor adjusts its effort—and power usage—based on the resistance of the ingredients you are blending."
+    },
+    {
+        name: "Running Power needed to cook on an Electric Hotplate on a Gas Range",
+        watts: 1500,
+        peakWatts: 1500,
+        averageWatts: 1500,
+        duration: "0.50 hrs",
+        frequency: 30,
+        img: "Gas Range Hot Plate.jpg",
+        powerDraw: "A hotplate uses electricity to heat a metal coil. It draws maximum power until it reaches the set temperature, then pulses to maintain that heat."
+    },
+    {
+        name: "Running power of one wash cycle on a Mini Dishwasher",
+        watts: 760,
+        peakWatts: 790,
+        averageWatts: 760,
+        duration: "1.00 hrs",
+        frequency: 60,
+        img: "Mini Dishwasher.jpg",
+        powerDraw: "A dishwasher uses substantial power to heat the water for the wash cycle, then draws less power to run the pump during the rinsing phase."
+    },
+    {
+        name: "Running power of a 1.5 HP Inverter Split-Type Aircon (Eco)",
+        watts: 540,
+        peakWatts: 1080,
+        averageWatts: 540,
+        duration: "8.00 hrs",
+        frequency: 30,
+        img: "1.5HP Inverter Aircon.jpg",
+        powerDraw: "An inverter aircon starts with high power to cool the room, then modulates its motor speed to maintain a steady, lower energy level."
+    },
+    {
+        name: "Peak Power needed for a 1.5 HP Non-Inverter Window Aircon",
+        watts: 1160,
+        peakWatts: 1160,
+        averageWatts: 928,
+        duration: "8.00 hrs",
+        frequency: 30,
+        img: "1.5HP Traditional Aircon.jpg",
+        powerDraw: "A traditional aircon has a simple on/off system. It runs at full power until the room is cool, then shuts off completely until the temperature rises again."
+    },
+    {
+        name: "Running power of a Stand Fan",
+        watts: 65,
+        peakWatts: 65,
+        averageWatts: 65,
+        duration: "8.00 hrs",
+        frequency: 30,
+        img: "Stand Fan.jpg",
+        powerDraw: "A fan uses a small electric motor to rotate the blades. Lowering the speed setting alters motor voltage and torque, drawing less power."
+    },
+    {
+        name: "Running Power of one wash cycle on a 10kg Smart Inverter Washing Machine",
+        watts: 200,
+        peakWatts: 1200,
+        averageWatts: 200,
+        duration: "1.00 hrs",
+        frequency: 15,
+        img: "Top Load Inverter Washing Machine.jpg",
+        powerDraw: "A smart washing machine can reach a peak of 1,200w to start up or during the high-speed spin cycle, but it automatically adjusts its motor speed and power usage based on the weight of the laundry, making it very energy efficient."
+    },
+    {
+        name: "Peak Power needed for a Self-Emptying Laser Navigation Robot Vacuum",
+        watts: 1000,
+        peakWatts: 1000,
+        averageWatts: 30,
+        duration: "1.00 hrs",
+        frequency: 60,
+        img: "Robot Vacuum.jpg",
+        powerDraw: "A robot vacuum draws a low baseline of power for navigation and cleaning, and draws a sudden surge in power during its 10 to 20 second self-empty duration."
+    },
+    {
+        name: "Running Power of a 65inch 4K Smart TV",
+        watts: 115,
+        peakWatts: 205,
+        averageWatts: 115,
+        duration: "4.00 hrs",
+        frequency: 30,
+        img: "65in TV.jpg",
+        powerDraw: "A large TV draws a little bit more power when the backlight is set to maximum, such as when watching High Dynamic Range content or content with very bright, white scenes."
+    },
+    {
+        name: "Running Power of a Home Security Wi-Fi CCTV",
+        watts: 3,
+        peakWatts: 7,
+        averageWatts: 3,
+        duration: "24.00 hrs",
+        frequency: 30,
+        img: "CCTV.jpg",
+        powerDraw: "A security camera is designed to remain 'awake' to monitor for movement, drawing a small and consistent amount of power 24/7."
+    },
+    {
+        name: "Peak Power  needed for a Water Booster Pump",
+        watts: 550,
+        peakWatts: 550,
+        averageWatts: 350,
+        duration: "1.50 hrs",
+        frequency: 30,
+        img: "Water Booster Pump.jpg",
+        powerDraw: "A booster pump requires a high initial surge of power to start the motor, then draws a constant load while the water pressure is active."
+    },
+    {
+        name: "Peak Power needed for a Shower Water Heater",
+        watts: 3600,
+        peakWatts: 3600,
+        averageWatts: 2100,
+        duration: "0.33 hrs",
+        frequency: 30,
+        img: "Shower Water Heater.jpg",
+        powerDraw: "A tankless shower heater draws significant power instantaneously to convert cold water into hot water as it passes through the heating element."
+    },
+    {
+        name: "Self-Consumption Running Power of a 8kW Single Phase Hybrid Inverter",
+        watts: 60,
+        peakWatts: 60,
+        averageWatts: 60,
+        duration: "16.00 hrs",
+        frequency: 30,
+        img: "8kW Solar Inverter.jpg",
+        powerDraw: "An inverter acts as a solar power manager. It stays active constantly to convert energy, drawing a small 'standby' load to power its internal electronics. While it is powered by the sun during daytime, it will still be taking power from either a battery or the grid during nighttime."
+    },
+    {
+        name: "Running Power of a Wi-Fi 6 Router",
+        watts: 5,
+        peakWatts: 12,
+        averageWatts: 5,
+        duration: "24.00 hrs",
+        frequency: 30,
+        img: "Wifi Router.jpg",
+        powerDraw: "When connected devices are idle or streaming light traffic, the Wi-Fi transmitters operate at low power levels to maintain connectivity. It draws a little bit more power during high-bandwidth transfers like concurrent 4K streams and large file downloads."
+    },
+    {
+        name: "Peak Power needed to heat up a Steam Iron",
+        watts: 950,
+        peakWatts: 1600,
+        averageWatts: 950,
+        duration: "1.00 hrs",
+        frequency: 4,
+        img: "Steam Iron.jpg",
+        powerDraw: "An iron draws high power to maintain the high temperature of the metal plate and to generate the steam needed to remove wrinkles."
+    },
+    {
+        name: "Running power of an 800 Lumens Incandescent Bulb",
+        watts: 60,
+        peakWatts: 60,
+        averageWatts: 60,
+        duration: "6.00 hrs",
+        frequency: 30,
+        img: "Incandescent Bulb.jpg",
+        powerDraw: "An old-fashioned light bulb is inefficient because it converts most of its power draw into heat rather than light."
+    },
+    {
+        name: "Running power of an 800 Lumens LED Bulb",
+        watts: 6.5,
+        peakWatts: 6.5,
+        averageWatts: 6.5,
+        duration: "6.00 hrs",
+        frequency: 30,
+        img: "LED Bulb.jpg",
+        powerDraw: "An LED bulb is highly efficient, drawing very little power to produce a bright light without generating significant heat."
+    },
+    {
+        name: "Running power needed to charge a smartphone",
+        watts: 22,
+        peakWatts: 33,
+        averageWatts: 22,
+        duration: "1.50 hrs",
+        frequency: 20,
+        img: "Smart Phone.jpg",
+        powerDraw: "A phone charger draws peak power during the initial 'fast-charge' phase, then gradually reduces the draw as the battery reaches full capacity."
+    },
+    {
+        name: "Running Power needed to charge a Sedan EV",
+        watts: 3300,
+        peakWatts: 3300,
+        averageWatts: 3300,
+        duration: "2.80 hrs",
+        frequency: 30,
+        img: "EV Sedan.jpg",
+        powerDraw: "Charging an electric vehicle is a high-energy process. It draws substantial power over several hours to fully recharge the large battery pack."
+    },
+    {
+        name: "Peak Power needed to charge an Electric Tricycle",
+        watts: 350,
+        peakWatts: 350,
+        averageWatts: 350,
+        duration: "3.28 hrs",
+        frequency: 30,
+        img: "E-Trike.jpg",
+        powerDraw: "An electric tricycle charger draws a steady, controlled load for a few hours until the battery balancing process is complete."
+    },
+    {
+        name: "Peak Power needed to cook 30 cups of rice in a 30-Cup Rice Cooker",
+        watts: 1650,
+        peakWatts: 1650,
+        averageWatts: 1400,
+        duration: "0.75 hrs",
+        frequency: 30,
+        img: "Rice Cooker.jpg",
+        powerDraw: "When a rice cooker is turned on, the internal heating element draws its full 1650W capacity to heat water rapidly. Once the water boils off and the temperature rises above 100°C, a thermal switch automatically trips to shift into a low-wattage 'Keep Warm' mode."
+    }
+];
+
+        let players = [];
+        let scores = [];
+        let remaining = [];
+        let currentAppliance = null;
+        let roundNum = 0;
+        let totalRoundsPool = 0;
+        let userRate = 15.00;
+        let userCurrency = '₱';
+
+        const playerCountInput = document.getElementById('player-count');
+        const playerNamesDiv = document.getElementById('player-names');
+
+        playerCountInput.addEventListener('input', renderPlayerNames);
+        renderPlayerNames();
+
+        function renderPlayerNames() {
+            const count = Math.min(8, Math.max(1, parseInt(playerCountInput.value) || 2));
+            playerNamesDiv.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const existing = players[i] || '';
+                playerNamesDiv.innerHTML += `<input type="text" value="${existing}" placeholder="Player ${i+1} name" class="w-full border rounded-lg px-3 py-2 text-sm" data-player="${i}">`;
+            }
+        }
+
+        function startGame() {
+            const count = Math.min(8, Math.max(1, parseInt(playerCountInput.value) || 2));
+            players = [];
+            for (let i = 0; i < count; i++) {
+                const inp = playerNamesDiv.querySelector(`[data-player="${i}"]`);
+                players.push(inp?.value.trim() || `Player ${i+1}`);
+            }
+            scores = players.map(() => 0);
+            
+            // Store custom electricity rate and currency
+            const rateVal = parseFloat(document.getElementById('electricity-rate').value);
+            userRate = isNaN(rateVal) || rateVal < 0 ? 15.00 : rateVal;
+            userCurrency = document.getElementById('currency-symbol').value || '₱';
+
+            totalRoundsPool = appliances.length;
+            remaining = [...Array(totalRoundsPool).keys()];
+            roundNum = 0;
+            
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('gameplay-layout').classList.remove('hidden');
+            
+            updateScoreboard();
+            nextRound();
+        }
+
+        function nextRound() {
+            document.getElementById('result-screen').classList.add('hidden');
+            
+            if (remaining.length === 0) {
+                endGame();
+                return;
+            }
+            
+            const idx = remaining.splice(Math.floor(Math.random() * remaining.length), 1)[0];
+            currentAppliance = appliances[idx];
+            roundNum++;
+
+            const progressPercent = Math.round(((roundNum - 1) / totalRoundsPool) * 100);
+            document.getElementById('progress-text').innerHTML = `Round<br>${roundNum}/${totalRoundsPool}`;
+            document.getElementById('progress-percent').textContent = `${progressPercent}%`;
+
+            const fillBar = document.getElementById('progress-bar-fill');
+            fillBar.style.height = `${progressPercent}%`;
+
+            fillBar.classList.remove('bg-red-500', 'bg-yellow-400', 'bg-green-500');
+            if (progressPercent < 33) {
+                fillBar.classList.add('bg-red-500');
+            } else if (progressPercent < 75) {
+                fillBar.classList.add('bg-yellow-400');
+            } else {
+                fillBar.classList.add('bg-green-500');
+            }
+
+            document.getElementById('appliance-name').textContent = currentAppliance.name;
+            const img = document.getElementById('appliance-img');
+            if (currentAppliance.img) { img.src = currentAppliance.img; img.parentElement.classList.remove('hidden'); }
+            else { img.parentElement.classList.add('hidden'); }
+
+            const guessDiv = document.getElementById('guess-inputs');
+            guessDiv.innerHTML = players.map((p, i) => `<div class="flex items-center gap-2"><span class="w-24 text-sm font-medium truncate">${p}</span><input type="number" id="guess-${i}" placeholder="Watts?" class="flex-1 border-2 rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none"></div>`).join('');
+
+            document.getElementById('game-screen').classList.remove('hidden');
+        }
+
+        function revealAnswer() {
+            const guesses = players.map((_, i) => parseInt(document.getElementById(`guess-${i}`).value) || 0);
+            const actual = currentAppliance.watts;
+            const diffs = guesses.map(g => Math.abs(g - actual));
+            const maxDiff = Math.max(...diffs, 1);
+
+            const results = players.map((p, i) => ({ name: p, guess: guesses[i], diff: diffs[i], idx: i }));
+            results.sort((a, b) => a.diff - b.diff);
+
+            let currentRank = 0;
+            results.forEach((r, i) => {
+                if (i > 0 && r.diff !== results[i - 1].diff) {
+                    currentRank = i;
+                }
+                r.calculatedRank = currentRank;
+            });
+
+            results.forEach((r) => {
+                const pts = Math.max(1, Math.round(10 * (1 - r.diff / (actual || 1))));
+                const finalPts = Math.max(0, r.calculatedRank === 0 ? pts + 2 : pts);
+                r.roundPoints = finalPts;
+                scores[r.idx] += finalPts;
+            });
+
+            const resImg = document.getElementById('result-img');
+            if (currentAppliance.img) { 
+                resImg.src = currentAppliance.img; 
+                resImg.parentElement.classList.remove('hidden'); 
+            } else { 
+                resImg.parentElement.classList.add('hidden'); 
+            }
+
+            // Populate Peak and Average Watts
+            const peakVal = currentAppliance.peakWatts ?? currentAppliance.watts ?? 0;
+            const avgVal = currentAppliance.averageWatts ?? currentAppliance.watts ?? 0;
+            document.getElementById('peak-wattage').textContent = `${peakVal}W`;
+            document.getElementById('avg-wattage').textContent = `${avgVal}W`;
+            
+            // Populate power draw description
+            const descElem = document.getElementById('power-draw-description');
+            if (descElem) {
+                descElem.textContent = currentAppliance.powerDraw || "No specific power draw details available.";
+            }
+
+            // Dynamic Energy and Cost Calculations
+            const durationHours = parseFloat(currentAppliance.duration) || 0;
+            const energyWh = avgVal * durationHours;
+            const energyKWh = energyWh / 1000;
+            
+            const costPerUse = energyKWh * userRate;
+            const freqDays = currentAppliance.frequency || 0;
+            const monthlyCost = costPerUse * freqDays;
+
+            document.getElementById('metric-duration').textContent = currentAppliance.duration || 'N/A';
+            document.getElementById('metric-energy').textContent = `${energyWh.toFixed(1)} Wh`;
+            document.getElementById('metric-frequency').textContent = currentAppliance.frequency != null ? `${currentAppliance.frequency}` : 'N/A';
+            
+            document.getElementById('metric-cost').textContent = `${userCurrency}${costPerUse.toFixed(2)}`;
+            document.getElementById('metric-monthly').textContent = `${userCurrency}${monthlyCost.toFixed(2)}`;
+            
+            // Display rate with dynamic currency prefix
+            document.getElementById('metric-rate-display').textContent = `⚡ Rate: ${userCurrency}${userRate.toFixed(2)}/kWh`;
+
+            document.getElementById('result-list').innerHTML = results.map((r) => {
+                const rank = r.calculatedRank;
+                const medal = rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : '';
+                return `
+                    <div class="flex justify-between items-center py-1 px-2 rounded gap-3 ${rank === 0 ? 'bg-amber-50 font-bold' : ''}">
+                        <div class="flex items-center min-w-0 flex-1 gap-1">
+                            <span class="flex-shrink-0">${medal}</span>
+                            <span class="break-all min-w-0 flex-1">${r.name}</span>
+                        </div>
+                        <div class="flex items-center gap-4 flex-shrink-0">
+                            <span class="text-sm font-medium text-amber-600 whitespace-nowrap">+${r.roundPoints} pts</span>
+                            <span class="text-right whitespace-nowrap">${r.guess}W <span class="text-xs opacity-60">(off by ${r.diff})</span></span>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            updateScoreboard();
+        }
+
+        function updateScoreboard() {
+            const sorted = players.map((p, i) => ({ name: p, score: scores[i] })).sort((a, b) => b.score - a.score);
+            document.getElementById('score-list').innerHTML = sorted.map((s, i) => `
+                <div class="flex justify-between items-center py-1 ${i === 0 ? 'font-bold' : ''}">
+                    <span class="truncate block max-w-[130px]">${s.name}</span>
+                    <span class="flex-shrink-0 ml-2">${s.score} pts</span>
+                </div>
+            `).join('');
+        }
+
+        function endGame() {
+            document.getElementById('gameplay-layout').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+
+            const sorted = players.map((p, i) => ({ name: p, score: scores[i] })).sort((a, b) => b.score - a.score);
+            const finalStandingList = document.getElementById('final-standing-list');
+            
+            finalStandingList.innerHTML = sorted.map((s, i) => {
+                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+                return `
+                    <div class="flex justify-between items-center py-2 px-3 rounded ${i === 0 ? 'bg-amber-50 font-bold border-2 border-amber-300' : 'bg-gray-50'}">
+                        <span>${medal} ${s.name}</span>
+                        <span>${s.score} pts</span>
+                    </div>`;
+            }).join('');
+
+            document.getElementById('end-screen').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+        }
+
+        function openManager() {
+            renderApplianceList();
+            document.getElementById('manager-modal').classList.remove('hidden');
+        }
+        function closeManager() { document.getElementById('manager-modal').classList.add('hidden'); }
+
+        function renderApplianceList() {
+            document.getElementById('appliance-list').innerHTML = appliances.map((a, i) => `
+                <div class="flex flex-col gap-1 p-2 bg-gray-50 rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <input type="text" value="${a.name}" onchange="appliances[${i}].name=this.value" class="w-full bg-transparent font-medium text-sm border-b border-transparent focus:border-amber-400 focus:outline-none">
+                        <button onclick="appliances.splice(${i},1);renderApplianceList()" class="text-red-400 hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="flex gap-4 text-xs text-gray-500 pl-1">
+                        <span>Watts: <input type="number" value="${a.watts}" onchange="appliances[${i}].watts=parseInt(this.value)||0" class="w-14 bg-transparent border-b border-transparent focus:border-amber-400 focus:outline-none">W</span>
+                        <span>Freq: <input type="number" value="${a.frequency||0}" onchange="appliances[${i}].frequency=parseInt(this.value)||0" class="w-10 bg-transparent border-b border-transparent focus:border-amber-400 focus:outline-none"> days/mo</span>
+                    </div>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        function addAppliance() {
+            const name = document.getElementById('new-name').value.trim();
+            const watts = parseInt(document.getElementById('new-watts').value) || 0;
+            const frequency = parseInt(document.getElementById('new-frequency').value) || 0;
+            if (!name) return;
+            appliances.push({ name, watts, peakWatts: watts, averageWatts: watts, frequency, duration: '1.00 hrs', img: '', powerDraw: 'Power draw varies based on operational mode.' });
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-watts').value = '';
+            document.getElementById('new-frequency').value = '';
+            renderApplianceList();
+        }
+
+        document.getElementById('manager-modal').addEventListener('click', function(e) { if (e.target === this) closeManager(); });
+
+        lucide.createIcons();
+  </script>
+</body>
+</html>
