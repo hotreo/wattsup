@@ -26,6 +26,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             border-radius: 12px;
             overflow: hidden;
+            container-type: inline-size; /* Enables container query units for fluid scaling */
         }
 
         .screen {
@@ -46,23 +47,31 @@
             display: none !important;
         }
 
-        /* Coded UI Buttons overlaid on the background */
-        .btn-how-to {
+        /* Responsive vertical flex container for title screen buttons */
+        .button-group {
             position: absolute;
-            top: 44.5%;
+            top: 43%;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.8cqw; /* Gap scales dynamically with container width to eliminate collision */
+            z-index: 5;
+        }
+
+        /* Coded UI Buttons overlaid on the background */
+        .btn-how-to {
             background-color: #fdf5d6;
             color: #1d5582;
             border: 1.5px solid rgba(29, 85, 130, 0.4);
             border-radius: 14px;
-            padding: 6px 18px;
-            font-size: 1rem;
+            padding: 0.8cqw 2.5cqw;
+            font-size: clamp(0.65rem, 2cqw, 1rem);
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.15s ease, filter 0.15s ease;
-            z-index: 5;
             white-space: nowrap;
         }
 
@@ -70,30 +79,25 @@
             background-color: #faf3da;
             color: #20867b;
             border: 2px solid #20867b;
-            transform: translateX(-50%) scale(1.03);
+            transform: scale(1.03);
         }
 
         .btn-how-to:active {
-            transform: translateX(-50%) scale(0.97);
+            transform: scale(0.97);
         }
 
         .btn-enter {
-            position: absolute;
-            top: 52.5%;
-            left: 50%;
-            transform: translateX(-50%);
             background-color: #fff6d7;
             color: #2f699d;
             border: 2.5px solid #2f699d;
             border-radius: 12px;
-            padding: 10px 36px;
-            font-size: 1.45rem;
+            padding: 1.1cqw 4.5cqw;
+            font-size: clamp(0.85rem, 2.8cqw, 1.45rem);
             font-weight: bold;
             letter-spacing: 1.5px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0,0,0,0.12);
             transition: transform 0.15s ease, background-color 0.15s ease;
-            z-index: 5;
             white-space: nowrap;
         }
 
@@ -101,11 +105,11 @@
             background-color: #faf3da;
             color: #20867b;
             border: 2.5px solid #20867b;
-            transform: translateX(-50%) scale(1.03);
+            transform: scale(1.03);
         }
 
         .btn-enter:active {
-            transform: translateX(-50%) scale(0.97);
+            transform: scale(0.97);
         }
 
         /* Styled "Back" Button on How To Play Screen */
@@ -118,8 +122,8 @@
             color: #1d5582;
             border: 1.5px solid rgba(29, 85, 130, 0.3);
             border-radius: 12px;
-            padding: 10px 24px;
-            font-size: 1rem;
+            padding: 1cqw 3cqw;
+            font-size: clamp(0.75rem, 2cqw, 1rem);
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -146,9 +150,11 @@
             <!-- Title graphic background without embedded button art -->
             <img src="Title.png" alt="Watt's Up Title Graphic">
             
-            <!-- Coded interactive UI elements -->
-            <button id="btn-how-to" class="btn-how-to">How to Play</button>
-            <button id="btn-enter" class="btn-enter">ENTER</button>
+            <!-- Coded interactive UI elements wrapped in dynamic flex box -->
+            <div class="button-group">
+                <button id="btn-how-to" class="btn-how-to">How to Play</button>
+                <button id="btn-enter" class="btn-enter">ENTER</button>
+            </div>
         </div>
 
         <!-- SCREEN 2: HOW TO PLAY SCREEN -->
@@ -176,7 +182,6 @@
 
             // Return to Title Screen
             btnBack.addEventListener('click', () => {
-                rulesScreen.classList.hidden = true;
                 rulesScreen.classList.add('hidden');
                 titleScreen.classList.remove('hidden');
             });
